@@ -1,7 +1,8 @@
 import { logger } from "../application/logging.js";
 import { web } from "../application/web.js";
-import { removeTestUser, createTestUser } from "./test-utils.js"
+import { removeTestUser, createTestUser, getTestUser } from "./test-utils.js"
 import supertest from "supertest";
+import bcrypt from "bcrypt";
 
 describe('POST /api/users', function() {
 
@@ -155,15 +156,47 @@ describe('GET /api/users/current', function() {
         expect(result.body.data.username).toBe('test-user');
     })
 
-    // it('get current user failed when token is invalid', async () => {
-    //     const result = await supertest(web)
-    //         .get('/api/users/current')
-    //         .set('Authorization', 'wrongtoken');
+    it('get current user failed when token is invalid', async () => {
+        const result = await supertest(web)
+            .get('/api/users/current')
+            .set('Authorization', 'wrongtoken');
 
-    //     logger.info(result.body);
+        logger.info(result.body);
 
-    //     expect(result.status).toBe(401);
-    //     expect(result.body.errors).toBeDefined();
-    // })
+        expect(result.status).toBe(401);
+        expect(result.body.errors).toBeDefined();
+    })
     
+})
+
+describe('PATCH /api/users/current', function() {
+
+    beforeEach(async () => {
+        await createTestUser();
+    })
+
+    afterEach(async () => {
+        await removeTestUser();
+    })
+
+    it('update current user is success', async () => {
+        const result = await supertest(web)
+            .patch('/api/users/current')
+            .set('Authorization', 'token')
+            .send({
+                name: 'Updated User',
+                password: 'newpassword'
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.data.username).toBe('test-user');
+        expect(result.body.data.name).toBe('Updated User');
+
+        logger.info(result.body);
+
+        const user = await getTestUser();
+        expect(await bcrypt.compare('newpassword', user.password)).toBe(true);
+    })
 })

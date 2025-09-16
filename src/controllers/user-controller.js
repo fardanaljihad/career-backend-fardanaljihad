@@ -1,8 +1,8 @@
-import userServices from "../services/user-services.js"
+import userService from "../services/user-service.js"
 
 const register = async (req, res, next) => {
     try {
-        const result = await userServices.register(req.body);
+        const result = await userService.register(req.body);
         res.status(200).json({
             data: result
         });
@@ -13,7 +13,7 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     try {
-        const result = await userServices.login(req.body);
+        const result = await userService.login(req.body);
         res.status(200).json({
             data: result
         });
@@ -25,7 +25,22 @@ const login = async (req, res, next) => {
 const get = async (req, res, next) => {
     try {
         const username = req.user.username;
-        const result = await userServices.get(username);
+        const result = await userService.get(username);
+        res.status(200).json({
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
+const update = async (req, res, next) => {
+    try {
+        const username = req.user.username;
+        const request = req.body;
+        request.username = username;
+
+        const result = await userService.update(request);
         res.status(200).json({
             data: result
         });
@@ -37,5 +52,6 @@ const get = async (req, res, next) => {
 export default {
     register,
     login,
-    get
+    get,
+    update
 }
