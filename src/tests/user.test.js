@@ -200,3 +200,26 @@ describe('PATCH /api/users/current', function() {
         expect(await bcrypt.compare('newpassword', user.password)).toBe(true);
     })
 })
+
+describe('DELETE /api/users/:id', function() {
+
+    beforeEach(async () => {
+        await createTestUser();
+    })
+
+    afterEach(async () => {
+        await removeTestUser();
+    })
+
+    it('delete user by id is success', async () => {
+        const user = await getTestUser();
+        
+        const result = await supertest(web)
+            .delete(`/api/users/${user.id}`)
+            .set('Authorization', 'token');
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+    })
+})

@@ -19,9 +19,12 @@ const updateUserValidation = Joi.object({
     password: Joi.string().max(100).optional()
 });
 
+const deleteUserValidation = Joi.number().integer().positive().required();
+
 export {
     registerUserValidation,
     loginUserValidation,
     getUserValidation,
-    updateUserValidation
+    updateUserValidation,
+    deleteUserValidation
 }

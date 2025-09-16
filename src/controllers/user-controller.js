@@ -49,9 +49,22 @@ const update = async (req, res, next) => {
     }
 }
 
+const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await userService.deleteUser(id);
+        res.status(200).json({
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     register,
     login,
     get,
-    update
+    update,
+    deleteUser
 }
