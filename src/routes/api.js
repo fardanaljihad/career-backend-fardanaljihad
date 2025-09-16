@@ -13,6 +13,7 @@ userRouter.patch('/api/users/current', userController.update);
 userRouter.delete('/api/users/:id', userController.deleteUser);
 
 searchRouter.get('/api/search/name', searchController.searchByName);
+searchRouter.get('/api/search/nim', searchController.searchByNim);
 
 export {
     userRouter,

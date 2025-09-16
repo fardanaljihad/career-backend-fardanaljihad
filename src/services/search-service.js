@@ -29,6 +29,14 @@ const searchByName = async (name) => {
     );
 };
 
+const searchByNim = async (nim) => {
+    const data = await getAllData();
+    return data.filter(item =>
+        item.NIM === nim
+    );
+}
+
 export default {
     searchByName,
+    searchByNim
 }
