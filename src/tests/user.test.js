@@ -1,6 +1,6 @@
 import { logger } from "../application/logging.js";
 import { web } from "../application/web.js";
-import { removeTestUser } from "./test-utils.js"
+import { removeTestUser, createTestUser } from "./test-utils.js"
 import supertest from "supertest";
 
 describe('POST /api/users', function() {
@@ -61,6 +61,74 @@ describe('POST /api/users', function() {
         logger.info(result.body);
 
         expect(result.status).toBe(400);
+        expect(result.body.errors).toBeDefined();
+    })
+})
+
+describe('POST /api/users/login', function() {
+    
+    beforeEach(async () => {
+        await createTestUser();
+    })
+
+    afterEach(async () => {
+        await removeTestUser();
+    })
+
+    it('log in successfully with valid credentials', async () => {
+        const result = await supertest(web)
+            .post('/api/users/login')
+            .send({
+                username: 'test-user',
+                password: 'password'
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.data.token).toBeDefined();
+        expect(result.body.data.token).not.toBe('token');
+    })
+
+    it('rejects login when the request is invalid', async () => {
+        const result = await supertest(web)
+            .post('/api/users/login')
+            .send({
+                username: '',
+                password: ''
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(400);
+        expect(result.body.errors).toBeDefined();
+    })
+
+    it('rejects login when the password is wrong', async () => {
+        const result = await supertest(web)
+            .post('/api/users/login')
+            .send({
+                username: 'test-user',
+                password: '123'
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.errors).toBeDefined();
+    })
+
+    it('rejects login when the username does not exist', async () => {
+        const result = await supertest(web)
+            .post('/api/users/login')
+            .send({
+                username: 'user',
+                password: 'password'
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
         expect(result.body.errors).toBeDefined();
     })
 })
