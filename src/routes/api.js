@@ -14,6 +14,7 @@ userRouter.delete('/api/users/:id', userController.deleteUser);
 
 searchRouter.get('/api/search/name', searchController.searchByName);
 searchRouter.get('/api/search/nim', searchController.searchByNim);
+searchRouter.get('/api/search/ymd', searchController.searchByYmd);
 
 export {
     userRouter,

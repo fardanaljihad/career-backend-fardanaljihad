@@ -20,7 +20,18 @@ const searchByNim = async (req, res, next) => {
     }
 }
 
+const searchByYmd = async (req, res, next) => {
+    try {
+        const { ymd } = req.query;
+        const result = await searchService.searchByYmd(ymd);
+        res.status(200).json({ data: result });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     searchByName,
-    searchByNim
+    searchByNim,
+    searchByYmd
 }

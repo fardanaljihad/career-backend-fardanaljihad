@@ -36,7 +36,15 @@ const searchByNim = async (nim) => {
     );
 }
 
+const searchByYmd = async (ymd) => {
+    const data = await getAllData();
+    return data.filter(item =>
+        item.YMD === ymd
+    );
+}
+
 export default {
     searchByName,
-    searchByNim
+    searchByNim,
+    searchByYmd
 }
